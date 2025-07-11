@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -17,8 +16,10 @@ public class GridMaker : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] private TMP_InputField gridSizeInput;
     [SerializeField] private Button generateButton;
+    [SerializeField] private TMP_Text counterText;
 
     private GameObject[,] grid;
+    private int Counter = 0;
 
     private void Start()
     {
@@ -128,6 +129,9 @@ public class GridMaker : MonoBehaviour
             {
                 c.Clear();
             }
+
+            Counter++;
+            counterText.text = Counter.ToString();
         }
 
         //dikey
@@ -141,6 +145,9 @@ public class GridMaker : MonoBehaviour
             {
                 c.Clear();
             }
+
+            Counter++;
+            counterText.text = Counter.ToString();
         }
     }
 
