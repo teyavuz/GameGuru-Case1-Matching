@@ -12,6 +12,9 @@ public class Cell : MonoBehaviour
 
     private bool isMarked = false;
 
+    /// <summary>
+    /// GridMaker'da belirlenen Cell'in konumunu kendine tanıtır. Birde GridMaker referansınıda alıyor.
+    /// </summary>
     public void Initialize(int x, int y, GridMaker gridMaker)
     {
         thisCellsX = x;
@@ -25,6 +28,9 @@ public class Cell : MonoBehaviour
         //TO-DO: Init daha geç çağırıldı okuyamadı xle y'yi buna bi bak kontrol sırasında okuyacak mı!
     }
 
+    /// <summary>
+    /// Mouse clik ile işaretleme işlemeyi tetikler.
+    /// </summary>
     private void OnMouseDown()
     {
         if (!isMarked)
@@ -33,6 +39,9 @@ public class Cell : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Hücreyi işaretler. Grid Makerdaki eşleşlme kontrolünü çalıştırır.
+    /// </summary>
     private void MarkCell()
     {
         isMarked = true;

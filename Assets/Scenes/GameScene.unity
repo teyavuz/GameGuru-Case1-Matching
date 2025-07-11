@@ -457,7 +457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc295c8a0d3e98343935f087d76bdbad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: 5
+  gridSize: 3
   cellPrefab: {fileID: 5994106154007686942, guid: f2ccf4c894b7de8449f2c4e690d057a8, type: 3}
   spacing: 0.1
   gridSizeInput: {fileID: 1052781678}

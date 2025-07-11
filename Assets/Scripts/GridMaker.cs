@@ -10,7 +10,7 @@ public class GridMaker : MonoBehaviour
 {
     [Header("Grid Settings")]
     [Tooltip("Grid size must be greater than or equal to 1.")]
-    [SerializeField, Min(1)] private int gridSize = 5;
+    [SerializeField, Min(3)] private int gridSize = 5;
     [SerializeField] private GameObject cellPrefab;
     [SerializeField] private float spacing = 0.1f;
 
@@ -37,6 +37,9 @@ public class GridMaker : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Generate butonu tıklandığında çağrılır. Yeni grid boyutunu input'tan alır ve grid'i yeniden oluşturur.
+    /// </summary>
     private void OnGenerateGridClicked()
     {
         string input = gridSizeInput.text;
@@ -54,6 +57,9 @@ public class GridMaker : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Mevcut grid'i temizler ve tüm hücreleri yok eder. Sayacı sıfırlar.
+    /// </summary>
     private void ClearExistingGrid()
     {
         if (grid == null) return;
@@ -70,6 +76,9 @@ public class GridMaker : MonoBehaviour
         counterText.text = Counter.ToString();
     }
 
+    /// <summary>
+    /// Belirtilen boyutta grid oluşturur. Her hücreyi instantiate eder ve konumlandırır.
+    /// </summary>
     public void CreateGrid()
     {
         grid = new GameObject[gridSize, gridSize];
@@ -87,7 +96,7 @@ public class GridMaker : MonoBehaviour
 
                 cell.GetComponent<Cell>().Initialize(x, y, this);
 
-                //Anims
+                /// Cell'lerin sıralanırken gerçekleştirdiği animasyonu burda Dotween ile yapıyorum.
                 cell.transform.localScale = Vector3.zero;
                 cell.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).SetDelay((x + y) * 0.03f);
             }
@@ -96,6 +105,9 @@ public class GridMaker : MonoBehaviour
         ScaleToFitScreen();
     }
 
+    /// <summary>
+    /// Kamera boyutunu ve konumunu grid'e göre ayarlar. Grid'in ekrana sığmasını sağlar.
+    /// </summary>
     private void ScaleToFitScreen()
     {
         Camera cam = Camera.main;
@@ -107,6 +119,8 @@ public class GridMaker : MonoBehaviour
         float gridWidth = gridSize * (1 + spacing);
         float gridHeight = gridSize * (1 + spacing);
 
+        /// Ekranın üst %60ını oyun alanı olarak kullanmak istedim bu sebeple alan hesabını 
+        /// yaparken hesabı tam ekrandan değil de yükseklikten %60 alarak hesaplattım.
         float usableHeightPortion = 0.6f;
         float screenHeightInUnits = gridHeight / usableHeightPortion;
 
@@ -120,13 +134,14 @@ public class GridMaker : MonoBehaviour
         cam.transform.position = new Vector3(0, -targetMidpointY, -10);
     }
 
+    /// <summary>
+    /// Belirtilen konumdaki hücreyi kontrol eder ve yatay/dikey eşleşmeleri bulur. 3 veya daha fazla eşleşme varsa bunları temizler.
+    /// </summary>
     public void CheckMatches(int x, int y)
     {
-        Debug.Log($"Checking matches for cell at ({x}, {y})");
+        // Debug.Log($"Checking matches for cell at ({x}, {y})");
 
-        //TO-DO: x ve y 'yi doğru yakalıyo dikey ve yatay eşlemele kontrolünü ekle yarın.
-
-        //yatay
+        //yatay eşleşmelere bakar varsa işareti kaldırıp sayacı artırır
         List<Cell> horizontalMatches = CheckDirection(x, y, Vector2Int.left).Concat(CheckDirection(x, y, Vector2Int.right)).ToList();
         horizontalMatches.Add(grid[x, y].GetComponent<Cell>());
 
@@ -141,7 +156,7 @@ public class GridMaker : MonoBehaviour
             AnimateCounter();
         }
 
-        //dikey
+        //dikey eşleşmelere bakar varsa işareti kaldırıp sayacı artırır
         List<Cell> verticalMatches = CheckDirection(x, y, Vector2Int.up).Concat(CheckDirection(x, y, Vector2Int.down)).ToList();
         verticalMatches.Add(grid[x, y].GetComponent<Cell>());
 
@@ -157,6 +172,9 @@ public class GridMaker : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sayac değerini günceller ve animasyonlu olarak gösterir.
+    /// </summary>
     private void AnimateCounter()
     {
         counterText.text = Counter.ToString();
@@ -170,6 +188,10 @@ public class GridMaker : MonoBehaviour
             });
     }
 
+    /// <summary>
+    /// Belirtilen yönde grid sınırları içerisindeki sıralı işaretlileri bir liste olarak tutup verir.
+    /// İstenen değerlerde bu yüzden x ve y de başlangıç konumu ve yönü.
+    /// </summary>
     private List<Cell> CheckDirection(int startX, int startY, Vector2Int direction)
     {
         List<Cell> matches = new List<Cell>();
@@ -195,6 +217,9 @@ public class GridMaker : MonoBehaviour
         return matches;
     }
 
+    /// <summary>
+    /// Grid sınırlarını kontrol eder. Verilen koordinatların grid içinde olup olmadığını verir. Grid bounds hesabı yani.
+    /// </summary>
     private bool BoundsChecker(int x, int y)
     {
         return x >= 0 && y >= 0 && x < gridSize && y < gridSize;
