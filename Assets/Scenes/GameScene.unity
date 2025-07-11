@@ -462,6 +462,7 @@ MonoBehaviour:
   spacing: 0.1
   gridSizeInput: {fileID: 1052781678}
   generateButton: {fileID: 581875881}
+  counterText: {fileID: 245144924}
 --- !u!4 &535039000
 Transform:
   m_ObjectHideFlags: 0

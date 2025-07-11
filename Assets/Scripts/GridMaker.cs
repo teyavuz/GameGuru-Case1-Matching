@@ -4,6 +4,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GridMaker : MonoBehaviour
 {
@@ -64,6 +65,9 @@ public class GridMaker : MonoBehaviour
         }
 
         grid = null;
+
+        Counter = 0;
+        counterText.text = Counter.ToString();
     }
 
     public void CreateGrid()
@@ -82,6 +86,10 @@ public class GridMaker : MonoBehaviour
                 grid[x, y] = cell;
 
                 cell.GetComponent<Cell>().Initialize(x, y, this);
+
+                //Anims
+                cell.transform.localScale = Vector3.zero;
+                cell.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).SetDelay((x + y) * 0.03f);
             }
         }
 
@@ -120,7 +128,6 @@ public class GridMaker : MonoBehaviour
 
         //yatay
         List<Cell> horizontalMatches = CheckDirection(x, y, Vector2Int.left).Concat(CheckDirection(x, y, Vector2Int.right)).ToList();
-
         horizontalMatches.Add(grid[x, y].GetComponent<Cell>());
 
         if (horizontalMatches.Count >= 3)
@@ -131,12 +138,11 @@ public class GridMaker : MonoBehaviour
             }
 
             Counter++;
-            counterText.text = Counter.ToString();
+            AnimateCounter();
         }
 
         //dikey
         List<Cell> verticalMatches = CheckDirection(x, y, Vector2Int.up).Concat(CheckDirection(x, y, Vector2Int.down)).ToList();
-
         verticalMatches.Add(grid[x, y].GetComponent<Cell>());
 
         if (verticalMatches.Count >= 3)
@@ -147,8 +153,21 @@ public class GridMaker : MonoBehaviour
             }
 
             Counter++;
-            counterText.text = Counter.ToString();
+            AnimateCounter();
         }
+    }
+
+    private void AnimateCounter()
+    {
+        counterText.text = Counter.ToString();
+        counterText.transform.DOKill(); // Aynı anda birden fazla animasyon olmaması içinmiş dökümantasyondan kontrol et
+        counterText.transform.localScale = Vector3.one;
+        counterText.transform.DOScale(1.4f, 0.2f)
+            .SetEase(Ease.OutBack)
+            .OnComplete(() =>
+            {
+                counterText.transform.DOScale(1f, 0.2f).SetEase(Ease.InBack);
+            });
     }
 
     private List<Cell> CheckDirection(int startX, int startY, Vector2Int direction)
